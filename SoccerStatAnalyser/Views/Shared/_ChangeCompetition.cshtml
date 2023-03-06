@@ -1,0 +1,40 @@
+﻿@using SoccerStatAnalyser.Controllers;
+@using SoccerStatAnalyser.Models;
+@model HomeController.PageModel;
+
+<div class="text-center">
+    <h2>Change Competition</h2>
+    <div class="all-comp-div">
+        @{
+            int count=0;
+            <!--loop through all logo links in page model-->
+            @foreach (var link in Model.LogoLinks)
+            {
+                int id = Array.IndexOf(Model.LogoLinks, link);
+                string compName = Competition.GetCompetitionName(id);
+
+                <a asp-controller="Home" asp-action="Index" asp-route-competitionId=@id title=@compName>
+                    <!--display selected competition-->
+                    @if (count == Model.CompetitionID)
+                    {
+                        <div class="comp-logo-div selected">
+                            <img class="logo" src="@link" alt=@compName />
+                        </div>
+                    }
+                    else
+                    {
+                        <!--display competitions that are not selected-->
+                        <div class="comp-logo-div">
+                            <img class="logo" src=@link alt=@compName />
+                        </div>
+                    }
+                </a>
+                count++;
+
+            }
+        }
+        <div class="clear"></div>
+    </div>
+    
+    
+</div>

@@ -1,0 +1,49 @@
+﻿@using SoccerStatAnalyser.Controllers;
+@using SoccerStatAnalyser.Models;
+@model Analyser.FixtureStats;
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">@Model.HomeTeamStats.Team.Name</th>
+            <th>Stat(%)</th>
+            <th colspan="2">@Model.AwayTeamStats.Team.Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loop through All Stats in page model-->
+        @for(int i=0; i<Model.HomeTeamStats.AllStats.Count; i++)
+        {
+            <!--display single stats-->
+            if (Model.HomeTeamStats.AllStats[i] is Analyser.SingleStat)
+            {
+                var homeStat = Model.HomeTeamStats.AllStats[i] as Analyser.SingleStat;
+                var awayStat = Model.AwayTeamStats.AllStats[i] as Analyser.SingleStat;
+                <tr>
+                    <td colspan="2">@homeStat.Value</td>
+                    <td>@homeStat.StatName</td>
+                    <td colspan="2">@awayStat.Value</td>
+                </tr>
+            }
+            else
+            {
+                <!--display double stats-->
+                var homeStat = Model.HomeTeamStats.AllStats[i] as Analyser.DoubleStat;
+                var awayStat = Model.HomeTeamStats.AllStats[i] as Analyser.DoubleStat;
+
+                <tr>
+                    <td>@homeStat.OverStatName: @homeStat.Value.Over</td>
+                    <td>@homeStat.UnderStatName: @homeStat.Value.Under</td>
+
+                    <td>@homeStat.StatName</td>
+
+                    <td>@awayStat.OverStatName: @awayStat.Value.Over</td>
+                    <td>@awayStat.UnderStatName: @awayStat.Value.Under</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+

@@ -1,0 +1,52 @@
+﻿@using SoccerStatAnalyser.Controllers;
+@using SoccerStatAnalyser.Models;
+@model HomeController.PageModel;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<add namespace="System.Web.Mvc.Html" />
+<div class="text-center">
+    <h1 class="display-4">Welcome to SoccerStatsAnalyser!</h1>
+    <p style="font-size: 20px;">Use this Web Application to compare and analyse football teams statistics from the top 5 leagues.</p>  
+    <p class="text-secondary">(all teams, competitions, match data and images are scraped from <a href="https://fbref.com">fbref.com</a>)</p>
+</div>
+<br/>
+
+<!-- Render change competion selection partial view-->
+@{
+    Html.RenderPartialAsync("_ChangeCompetition", Model);
+}
+<br />
+
+<!-- Render fixture select partial view-->
+@{
+    Html.RenderPartialAsync("_FixtureSelect", Model);
+}
+<br />
+
+<!-- Render Analyser Stats partial view-->
+@if (Model.AllStats != null)
+{
+    <a href="#overall-stats" id="GoToStats"></a>
+    <script>
+            document.getElementById("GoToStats").click();
+    </script>
+
+
+    <div class="text-center" id="overall-stats">
+        <h2>Overall Stats</h2>
+        @{
+            Html.RenderPartialAsync("_Analyser", Model.AllStats.RegularStats);
+        }
+
+        <br />
+
+        <h2>Home and Away Only Stats</h2>
+        @{
+            Html.RenderPartialAsync("_Analyser", Model.AllStats.HomeAwayStats);
+        }
+    </div>
+}
+
+

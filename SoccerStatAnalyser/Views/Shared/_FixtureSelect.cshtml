@@ -1,0 +1,136 @@
+﻿@using SoccerStatAnalyser.Controllers;
+@using SoccerStatAnalyser.Models;
+@model HomeController.PageModel;
+
+<div class="text-center">
+    <h2>Select @Competition.GetCompetitionName(Model.CompetitionID) Fixture</h2>
+    <div class="fixture-select-div">
+
+        <!--form for fixture to analyse-->
+        <form method="post" asp-controller="Home" asp-action="Analyse">
+
+            <!--script to change team logo when selection changes triggered by onchange event in select element-->
+            <script>
+                function changeImage(id) {
+                    var select = document.getElementById(id);
+                    var imgLink = select.options[select.selectedIndex].dataset.logo;
+                    var imgId;
+                    var img;
+                    if (id == "homeTeam") {
+                        img = document.getElementById("homeTeamLogo").src = imgLink;
+                    }
+                    else {
+                        img = document.getElementById("awayTeamLogo").src = imgLink;
+                    }
+                }
+            </script>
+            <div class="team-logo-div">
+                <img id="homeTeamLogo" class="logo" src=@Model.AllTeams[Model.HomeTeamId].LogoPath alt=homeTeamLogo />
+            </div>
+            <div class="team-select-div">
+                <h4>Home</h4>
+                    <!--select Home Team-->
+                    <select name="homeTeamLink" class="team-select" id="homeTeam" onchange='changeImage("homeTeam")'>
+                        @foreach (var team in @Model.AllTeams)
+                        {
+                            if (Model.AllTeams.IndexOf(team)==Model.HomeTeamId)
+                            {
+                                <!--display selected team-->
+                                <option value="@team.FbrefLink" data-logo=@team.LogoPath selected="selected">
+                                    @team.Name
+                                </option>
+                            }
+                            else
+                            {
+                            <!--options for teams not selected-->
+                                <option value="@team.FbrefLink" data-logo=@team.LogoPath>
+                                    @team.Name
+                                </option>
+                            }
+                        }
+                    </select>
+            </div>
+
+            
+            <div class="vs-div text-center">
+                <h2>VS</h2>
+            </div>
+
+            <div class="team-select-div">
+                <h4>Away</h4>
+                <!--select Home Team-->
+                <select name="awayTeamLink" class="logo" id="awayTeam" onchange='changeImage("awayTeam")'>
+                    @foreach (var team in @Model.AllTeams)
+                    {
+                        if (Model.AllTeams.IndexOf(team)==Model.AwayTeamId)
+                        {
+                            <option value="@team.FbrefLink" data-logo=@team.LogoPath selected="selected">
+                                @team.Name
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@team.FbrefLink" data-logo=@team.LogoPath>
+                                @team.Name
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="team-logo-div">
+                <img id="awayTeamLogo" class="logo" src=@Model.AllTeams[Model.AwayTeamId].LogoPath alt="awayTeamLogo" />
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="fixture-settings-div">
+                <!--Input Duration filter setting-->
+                <div class="fixture-setting">
+                    <label for="duration">Duration: </label>
+                    <!--Set fixture settings for fixture currently being analysed as default input-->
+                    @{
+                        int duration;
+                        string competition;
+
+                        if (Model.AllStats != null)
+                        {
+                            competition = Model.AllStats.RegularStats.Competition;
+                            duration = Model.AllStats.RegularStats.Duration;
+                        }
+                        else
+                        {
+                            duration = 5;
+                            competition = "All";
+                        }
+
+
+                    }
+                    <input type="number" name="duration" value=@duration min="1" max="50" />
+                </div>
+                <!--Input Competition filter setting-->
+                <div class="fixture-setting">
+                    <label for="competitionId">Competition: </label>
+                    <select name="competitionFilterId">
+                        <!--Set competition for fixture currently being analysed as default input-->
+                        @if(competition=="All")
+                        {
+                            <option value=-1 selected="selected">All</option>
+                            <option value=@Model.CompetitionID>@Competition.GetCompetitionName(Model.CompetitionID)</option>
+                        }
+                        else
+                        {
+                            <option value=-1>All</option>
+                            <option value=@Model.CompetitionID selected="selected">@Competition.GetCompetitionName(Model.CompetitionID)</option>
+                        }
+
+                    </select>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <input type="number" hidden="hidden" name="competitionId" value=@Model.CompetitionID />
+            <div class="row text-center">
+                <input type="submit" value="Analyse" />
+            </div>
+        </form>
+    </div>
+</div>
